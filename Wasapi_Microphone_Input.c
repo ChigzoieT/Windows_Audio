@@ -101,20 +101,6 @@ if(framesAvailable>0){
 		sprintf(framesgetter, "%d", sampleValue);
 		MessageBox(NULL, framesgetter, "current sample", MB_OK);
 	}
-	/*FILE *fp = fopen("data.txt", "w");
-	if(fp != NULL){
-		for (UINT32 i = 0; i < framesAvailable; ++i) {
-    int sampleValue = ((int*)pData)[i];
-    sprintf(framesgetter, "%d", sampleValue);
-    MessageBox(NULL, framesgetter, "currrent sample", MB_OK);
-    fwrite(framesgetter, sizeof(framesgetter), 100, fp);
-
-    if(i == 100){
-    	break;
-    }
-
-}
-	}*/
 	
 }
 

@@ -3,11 +3,17 @@
 
 #include <stdio.h>
 
+//>cl modsam1.c readfile.c /link ole32.lib user32.lib mmdevapi.lib
+
 typedef struct dataholder{
 	int currposition;
 	int root;
 	int nextposition;
 }dataholder;
+
+UINT32* data_cave;
+
+UINT32* modsam_entry;
 
 
 typedef enum splash{
@@ -16,8 +22,10 @@ typedef enum splash{
 
 void dataupdater(dataholder* hold);
 
-void retriever(FILE* fp, dataholder* dt);
+void retriever(UINT32* loadbuffer ,FILE* fp, dataholder* dt);
 
-int entry(BYTE*loadbuffer, int position);
+int entry(BYTE*loadbuffer, int position, UINT32 datax);
+
+void fillbuffer(UINT32* loadbuffer,  UINT32* data_cave, dataholder* dt);
 
 #endif

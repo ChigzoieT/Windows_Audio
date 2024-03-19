@@ -2,9 +2,6 @@
 #include <windows.h>
 #include "readfile.h"
 
-
-
-
 void dataupdater(dataholder* hold){
 	if(hold!=NULL){
 		hold->nextposition = hold->nextposition + hold->root;
@@ -22,42 +19,73 @@ void dataupdater(dataholder* hold){
 }*/
 
 
-void retriever(FILE* fp, dataholder* dt){
+void retriever(UINT32* loadbuffer ,FILE* fp, dataholder* dt){
 	UINT32 data;
 	while(fscanf(fp, "%d", &data)!=EOF){
-		printf("%d \n", data);
-		if(dt->currposition == dt->nextposition){
-			printf("new curr_position == %d\n", dt->currposition);
-			dataupdater(dt);
-			printf("new curr_position == %d\n", dt->currposition);
+		*data_cave = data;
+		printf("file in data_cavex ==> %d \n", *data_cave);
+		/*if(dt->currposition == dt->nextposition){
+			//printf("new curr_position == %d\n", dt->currposition);
+			//dataupdater(dt);
 
-		}
+		}*/
 			 dt->currposition++;
+			 data_cave++;
 	}
 
-	free(dt);
+	fillbuffer(loadbuffer, data_cave, dt);
+
+}
+
+void fillbuffer(UINT32* loadbuffer,  UINT32* data_cave, dataholder* dt){
+	int new;
+
+	if(dt->nextposition == 0){
+		new = dt->root;
+		for(int i = 0; i< new; i++){
+			*loadbuffer++ = data_cave[i]; 
+		}
+	}else{
+		new = dt->root * dt->nextposition;
+		int x = new + dt->root;
+		for(int i = new; i< x; i++){
+			*loadbuffer++ = data_cave[i]; 
+		}
+	}
+	
 }
 
 
-int entry(BYTE* loadbuffer,int position)
+int entry(BYTE* loadbuffer,int position, UINT32 datax)
 {
-
-	printf("retrieving audio data...");
-
-	dataholder* dt = (dataholder*)malloc(sizeof(dataholder));
+	modsam_entry = (UINT32*)loadbuffer;
+	dataholder* dt =(dataholder*)malloc(sizeof(dataholder));
 	dt->currposition = 0;
-	dt-> root = position;
+	dt-> root = datax;
 	dt->nextposition = position;
+	printf("buffer count ==> %d \n", datax);
+	if(dt->nextposition != 0){
+		printf("position != 0\n");
+		fillbuffer(modsam_entry,data_cave, dt);
+	}else{
+		printf("position == 0\n");
+		printf("retrieving audio data...\n");
+		data_cave = (UINT32*)malloc(118500 * sizeof(UINT32));
+		//data_cave = (UINT32*)calloc(118500, sizeof(UINT32));
 
-	FILE *filepointer;
-	
-	filepointer = fopen("data.txt", "r");
-	if(filepointer == NULL)
+		
+		FILE *filepointer;
+		filepointer = fopen("data.txt", "r");
+		if(filepointer == NULL)
 		printf("file not opened");
 
-	retriever(filepointer, dt);
+
+	retriever(modsam_entry,filepointer, dt);
 
 	fclose(filepointer);
+	}
+	free(dt);
+	free(data_cave);
 
 	return PROCESSING_DONE;
 }

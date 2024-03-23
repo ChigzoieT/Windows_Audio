@@ -69,7 +69,7 @@ Tree* build_tree(){
 					}
 					current = current->right;
 				}
-				if(i ==2){
+				if(i ==3){
 					current->value = value;
 				}
 			}

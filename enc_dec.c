@@ -29,6 +29,7 @@ Tree* CreateNode(int value){
 
 	newNode->left = NULL;
 	newNode ->right = NULL;
+	newNode->value = NULL;
 
 	return newNode;
 }
@@ -147,7 +148,6 @@ void splitter(float value){
 	x[1] = (value -=(int)value) * 10;
 	encoder(x);
 }
-
 
 
 

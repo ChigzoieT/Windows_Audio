@@ -8,13 +8,12 @@ uint8_t bits = 0;
 uint8_t remaind = 0;
 uint8_t bit_count = 0;
 uint8_t total_bits = 8;
-
 #define arraysize (sizeof(values)/sizeof(values[0]))
 
 typedef struct Tree{
 	struct Tree *left;
 	struct Tree *right;
-	int value;
+	uint8_t* value;
 
 }Tree;
 
@@ -33,6 +32,8 @@ Tree* CreateNode(int value){
 
 	return newNode;
 }
+
+
 
 Tree* build_tree(){// this function doesnt give the optimal sollution to building a standard huffman tree arbitrarily, it was built on obvious patterns in the array of data present;
 	printf("Strarting tree sequence...\n");
@@ -57,7 +58,7 @@ Tree* build_tree(){// this function doesnt give the optimal sollution to buildin
 					current = current->right;
 				}
 				if(i ==2){
-					current->value = value;
+					current->value = &value;
 				}
 			}
 		}else{
@@ -75,7 +76,7 @@ Tree* build_tree(){// this function doesnt give the optimal sollution to buildin
 					current = current->right;
 				}
 				if(i ==3){
-					current->value = value;
+					current->value = &value;
 				}
 			}
 		}
@@ -88,10 +89,11 @@ Tree* build_tree(){// this function doesnt give the optimal sollution to buildin
 
 
 
-void decoder(uint8_t data){
-	
+uint8_t decoder(uint8_t data){
+	uint8_t n = 1;
+	data = (data<< n) | (data>>(8-n));
+	return data;
 }
-
 
 
 
@@ -153,9 +155,12 @@ void splitter(float value){
 
 void main()
 {
-	//Tree* newval = build_tree();
-	//uint8_t x = newval->right->right->left->right->value;
-	//printf("value at position == %u\n", x);
+	Tree* newval = build_tree();
+	uint8_t* x = newval->right->right->left->right->value;
+	printf("value at position == %u\n", *x);
+	uint8_t r = 212;
+
+	printf("The rotated value ==> %u\n",decoder(r));
 
 	 char str[20] = "-345.383 xyz"; 
 	 double ret;

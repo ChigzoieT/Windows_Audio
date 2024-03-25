@@ -9,7 +9,7 @@ uint8_t remaind = 0;
 uint8_t bit_count = 0;
 uint8_t total_bits = 8;
 
-#define arraysize (sizeof(huffmancodes)/sizeof(huffmancodes[0]))
+#define arraysize (sizeof(values)/sizeof(values[0]))
 
 typedef struct Tree{
 	struct Tree *left;
@@ -19,21 +19,25 @@ typedef struct Tree{
 }Tree;
 
 
+
 Tree* CreateNode(int value){
 	Tree* newNode = (Tree*)malloc(sizeof(Tree));
-	if(newNode!=NULL){
+	if(newNode==NULL){
 		("Memory allocation failed");
 		exit(0);
 	}
+
 	newNode->left = NULL;
 	newNode ->right = NULL;
 
 	return newNode;
 }
 
-Tree* build_tree(){
-	Tree* root = CreateNode(-1);
+Tree* build_tree(){// this function doesnt give the optimal sollution to building a standard huffman tree arbitrarily, it was built on obvious patterns in the array of data present;
+	printf("Strarting tree sequence...\n");
+	Tree* root = CreateNode(0);
 	for(int x = 0; x<arraysize; x++){
+		printf("%d\n", x);
 		Tree* current = root;
 		uint8_t huffmanCode = huffmancodes[x];
         uint8_t value = values[x];
@@ -76,29 +80,40 @@ Tree* build_tree(){
 		}
 
 	}
+	printf("Tree built successfully!\n");
 	return root;
 }
 
-//0	000 1	001  2	010  3	011  4	1000 5	1001   6	1010   7	1011   8	1100   9	1101   10	1110  11	1111 12	10100
 
-int float_part(float value){
-	value -= (int)value;
-	int cleaned = (int)(value * 10);
-	return cleaned;
+
+
+void decoder(uint8_t data){
+	
 }
 
 
 
-void encoder(int value){
-	while(value){
-		int x = value%10;
-		value /= 10;
-		if(remaind!=0 && remaind<3){
+
+void accept(uint8_t buffer){
+	uint8_t x = buffer;
+	//takes in an already encoded bit stream.
+}
+
+
+
+
+void encoder(int* array){
+	for(int k = 0; k<2; k++){
+		int value = array[k];
+		while(value){
+			int x = value%10;
+			if(remaind!=0 && remaind<3){
 				bits<<=remaind;
 				uint8_t new_bits = (3 - remaind);
 				huffmancodes[x] >>= new_bits;
 				bits |= huffmancodes[x];
 				remaind = 0;
+				accept(bits);
 				bit_count = new_bits;
 			}else if(remaind ==0 ){
 				if(x == values[x]){
@@ -114,19 +129,38 @@ void encoder(int value){
 					remaind += (total_bits - bit_count);
 				}
 			}
-
+			value /= 10;
 		}
+		k++;
 	}
+
+}
+
+
+
+
+//0	000 1	001  2	010  3	011  4	1000 5	1001   6	1010   7	1011   8	1100   9	1101   10	1110  11	1111 12	10100
+
+void splitter(float value){
+	int* x = (int*)malloc(2*sizeof(int));
+	x[0] = (int)value;
+	x[1] = (value -=(int)value) * 10;
+	encoder(x);
+}
+
 
 
 
 void main()
 {
+	//Tree* newval = build_tree();
+	//uint8_t x = newval->right->right->left->right->value;
+	//printf("value at position == %u\n", x);
 
 	 char str[20] = "-345.383 xyz"; 
 	 double ret;
 	 char *ptr;
 	 ret = strtod(str, &ptr);
-	 printf("Original number: %lf\n", ret);
+	 printf("Original number: %f\n", ret);
 	 printf("%s", ptr);
 }
